@@ -15,7 +15,7 @@
 #define RINGBUFFER_H_
 
 #pragma once
-
+#include <stdint.h>
 #ifndef NOMINMAX
 
     #ifndef min

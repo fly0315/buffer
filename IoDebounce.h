@@ -9,7 +9,8 @@
 #pragma once
 #include "RingBuffer.h"
 
-#define IOBITS_u64 unsigned long long
+#define IOBITS_64b uint64_t
+#define BITNUMBER 64
 /**
 inline unsigned int GetBit(IOBITS_u64 data, unsigned int i) { return ((data >> i) & 1u); }
 inline void SetBit(IOBITS_u64 &data, unsigned int i) { (data |= ((IOBITS_u64)1 << i)); }
@@ -93,32 +94,27 @@ public:
 	 * 1-Bits in MASK means these bits shouldn't be eliminated jitters
 	 * MASK = 0 means all IO bits should be eliminated jitters
 	 */
-	IoDebounce(IOBITS_u64 InitIOs,
+	IoDebounce(IOBITS_64b InitIOs,
 				unsigned int Depth, 
 				unsigned int Threshold,
-				IOBITS_u64 MASK = 0
+				IOBITS_64b MASK = 0
 				 );
 	~IoDebounce();
 
-	IOBITS_u64 JitterControl(IOBITS_u64 IOs);
-	inline IOBITS_u64 GetOutput(){ return m_OutPutValue; }
-	void SetFilters(unsigned int* depthArray, unsigned int* thresholdArray);
+	IOBITS_64b JitterControl(IOBITS_64b IOs);
+	inline IOBITS_64b GetOutput(){ return m_OutPutValue; }
+	void SetFilter(unsigned int* depthArray, unsigned int* thresholdArray);
 private:
-	IOBITS_u64 m_Mask;
-	IOBITS_u64 m_InitValue;
-	IOBITS_u64 m_OutPutValue;
-	class IO_CNTS
+	IOBITS_64b m_Mask;
+	IOBITS_64b m_InitValue;
+	IOBITS_64b m_OutPutValue;
+	typedef struct _FILTER_PARAM
 	{
-	public:
-		IO_CNTS()
-		{
-			
-		}
-		unsigned int arrayDepths[64];
-		unsigned int arrayThreshold[64];
+		unsigned int Depths[BITNUMBER];
+		unsigned int Threshold[BITNUMBER];
 
 	};
-	IO_CNTS m_Filters;
+	_FILTER_PARAM m_FilterParameters;
 	RingBuffer m_ChangedBitBuffer;
 	/** 
 	 * Table element structure: 
