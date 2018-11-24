@@ -79,8 +79,8 @@ IOBITS_64b IoDebounce::JitterControl(IOBITS_64b IOs)
 		/* 2.3.and toggle changed bit index */
 		if (sum >= *(m_FilterParameters.Threshold + bi))
 		{
-			temp = m_OutPutValue ^ LHB;		// considered multi-thread safety - LiuBin. 20181124
-// 			m_OutPutValue ^= LHB;
+			// TODO: considering multi-thread safety - LiuBin. 20181124
+			m_OutPutValue ^= LHB; // Not safe for multi-thread mode.
 			for (nDepth = (*(m_FilterParameters.Depths + bi) - 1); nDepth; nDepth--)
 			{
 				m_ChangedBitBuffer.ReadBackAt(nDepth - 1, &CB);
@@ -90,7 +90,7 @@ IOBITS_64b IoDebounce::JitterControl(IOBITS_64b IOs)
 		}
 	}
 	/* 3.mask bit with no debounce */
-	m_OutPutValue = (temp & (~m_Mask)) + (IOs & m_Mask);
+	m_OutPutValue = (m_OutPutValue & (~m_Mask)) + (IOs & m_Mask);
 	return m_OutPutValue;
 }
 
