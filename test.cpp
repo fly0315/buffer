@@ -28,16 +28,17 @@ void main()
 	threshold[8] = 8;
 	m_IoBuffer.SetFilter(depth, threshold);
 
-	uint64_t IOs_64b;
+	uint64_t IOs_64b;	// 保存采样值
+	uint64_t q;			// 保存输出值
 	for (int i = 0; i < 10; i++)
 	{
 		IOs_64b = 0X8000000000000001; 
 		// 模拟进行一次采样，q值为输出值
 		// 在第1~3次循环中q值为0.
 		// 在循环到第4次及以上时，q值为0X8000000000000001
-		uint64_t q = m_IoBuffer.JitterControl(IOs_64b);
+		q = m_IoBuffer.JitterControl(IOs_64b);
 	}
-
+	q = m_IoBuffer.GetOutput();	// 获取输出值，q=0X8000000000000001
 	for (int i = 0; i < 10; i++)
 	{
 		IOs_64b = 0x7ffffffffffffffe; 
@@ -45,7 +46,8 @@ void main()
 		// 在第1~3次循环中q值为0X8000000000000001.
 		// 在循环到第4~7次时，q值为0X7ffffffffffffefe
 		// 在循环到第8次及以上时，q值为0x7ffffffffffffffe
-		uint64_t q = m_IoBuffer.JitterControl(IOs_64b);
+		q = m_IoBuffer.JitterControl(IOs_64b);
 	}
+	q = m_IoBuffer.GetOutput();	// 获取输出值，q=0x7ffffffffffffffe
 	
 }
